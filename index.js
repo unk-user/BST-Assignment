@@ -150,5 +150,5 @@ const mergeSort = (array) => {
     }
 }
 
-module.exports = {mergeSort, prettyPrint, Node, Tree};
+module.exports = {mergeSort, Node, Tree};
 
