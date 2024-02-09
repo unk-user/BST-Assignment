@@ -9,10 +9,10 @@ class Node {
 class Tree {
     constructor(array) {
         array = mergeSort(array);
-        this.root = this.buildTree(array, 0, array.length - 1);
+        this.root = this.buildTree(array);
     }
 
-    buildTree(array, start, end){
+    buildTree(array, start = 0, end = array.length - 1){
         if(end < start) {
             return null;
         } else {
@@ -107,6 +107,90 @@ class Tree {
         }
         return result;
     }
+    inOrder(callBack, node = this.root){
+        let result = []
+        if(!node) return result = [];
+        if (node.left) {
+            result = result.concat(this.inOrder(callBack, node.left));
+        }
+        if(callBack){
+            callBack(node);
+        } else {
+            result.push(node.data);
+        }
+        if(node.right) {
+            result = result.concat(this.inOrder(callBack, node.right));
+        }
+        return result;
+    }
+    preOrder(callBack, node = this.root){
+        let result = []
+        if(!node) return result;
+        if(callBack){
+            callBack(node);
+        } else {
+            result.push(node.data);
+        }
+        if (node.left) {
+            result = result.concat(this.preOrder(callBack, node.left));
+        }
+        if(node.right) {
+            result = result.concat(this.preOrder(callBack, node.right));
+        }
+        return result;
+    }
+    postOrder(callBack, node = this.root){
+        let result = []
+        if(!node) return result;
+        if (node.left) {
+            result = result.concat(this.postOrder(callBack, node.left));
+        }
+        if(node.right) {
+            result = result.concat(this.postOrder(callBack, node.right));
+        }
+        if(callBack){
+            callBack(node);
+        } else {
+            result.push(node.data);
+        }
+        return result;
+    }
+    height(node){
+        if(!node) return 0;
+        if(!node.right && !node.left)return 0;
+        const heightRight = this.height(node.right);
+        const heightLeft= this.height(node.left);
+        return Math.max(heightRight, heightLeft) + 1;
+    }
+    depth(node, parent = this.root){
+        if(!node || !parent) return null;
+        if(node === parent) return 0;
+        if(node.data < parent.data){
+            return this.depth(node, parent.left) + 1;
+        } else {
+            return this.depth(node, parent.right) + 1;
+        }
+    }
+    isBalanced(node = this.root){
+        if(!node) return true;
+
+        const leftHeight = this.height(node.left);
+        const rightHeight = this.height(node.right);
+        const isBalancedNode = Math.abs(leftHeight - rightHeight) <= 1;
+        
+        const isBalancedLeft = this.isBalanced(node.left);
+        const isBalancedRight = this.isBalanced(node.right);
+        
+        return isBalancedLeft && isBalancedRight && isBalancedNode;
+    }
+    reBalance() {
+        if(this.isBalanced()) return;
+        const array = this.inOrder(false);
+        const newRoot = this.buildTree(array);
+        this.root = newRoot;
+    }
+
+
 }
 
 
@@ -150,5 +234,9 @@ const mergeSort = (array) => {
     }
 }
 
+let tree = new Tree([1, 2, 3,4 ,5 ,6, 7]);
+console.log(tree.depth(tree.find(2)))
 module.exports = {mergeSort, Node, Tree};
+
+
 
